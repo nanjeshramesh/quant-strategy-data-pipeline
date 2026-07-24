@@ -1,0 +1,8 @@
+{
+  "source": "strategy_b",
+  "date": "2026-07-24",
+  "error_type": "SchemaDriftError",
+  "error": "[strategy_b] missing expected column(s) ['ProfitLossUSD']; got columns=['StrategyID', 'Date', 'Symbol', 'SignalScore', 'PositionTarget', 'PnLUSD', 'GrossExposure', 'NetExposure']",
+  "detected_at": "2026-07-24T18:33:21.707286",
+  "traceback": "Traceback (most recent call last):\n  File \"/sessions/jolly-optimistic-mccarthy/mnt/outputs/strategy-analytics-lakehouse/src/standardize.py\", line 164, in run\n    signals, pnl = parser(run_date)\n  File \"/sessions/jolly-optimistic-mccarthy/mnt/outputs/strategy-analytics-lakehouse/src/standardize.py\", line 80, in parse_strategy_b\n    _require_columns(df, [\"ProfitLossUSD\"], \"strategy_b\")\n  File \"/sessions/jolly-optimistic-mccarthy/mnt/outputs/strategy-analytics-lakehouse/src/standardize.py\", line 45, in _require_columns\n    raise SchemaDriftError(\nSchemaDriftError: [strategy_b] missing expected column(s) ['ProfitLossUSD']; got columns=['StrategyID', 'Date', 'Symbol', 'SignalScore', 'PositionTarget', 'PnLUSD', 'GrossExposure', 'NetExposure']\n"
+}

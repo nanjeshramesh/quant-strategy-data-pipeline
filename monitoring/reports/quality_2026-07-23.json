@@ -1,0 +1,76 @@
+{
+  "date": "2026-07-23",
+  "generated_at": "2026-07-24T18:33:14.656877",
+  "checks": [
+    {
+      "check": "freshness",
+      "passed": true,
+      "present": [
+        "strategy_a",
+        "strategy_b",
+        "strategy_c"
+      ],
+      "missing": [],
+      "detail": "3/3 strategies landed for 2026-07-23"
+    },
+    {
+      "check": "row_counts",
+      "passed": true,
+      "min_expected": 10,
+      "by_strategy": {
+        "strategy_a": {
+          "row_count": 40,
+          "passed": true
+        },
+        "strategy_b": {
+          "row_count": 40,
+          "passed": true
+        },
+        "strategy_c": {
+          "row_count": 40,
+          "passed": true
+        }
+      }
+    },
+    {
+      "check": "null_rates",
+      "passed": true,
+      "by_strategy": {
+        "strategy_a": {
+          "null_rate": 0.0,
+          "passed": true
+        },
+        "strategy_b": {
+          "null_rate": 0.0,
+          "passed": true
+        },
+        "strategy_c": {
+          "null_rate": 0.0,
+          "passed": true
+        }
+      }
+    },
+    {
+      "check": "pnl_sanity",
+      "passed": true,
+      "by_strategy": {
+        "strategy_a": {
+          "gross": 25770259.01,
+          "net": -1369308.05,
+          "passed": true
+        },
+        "strategy_b": {
+          "gross": 18438500.59,
+          "net": -429399.26,
+          "passed": true
+        },
+        "strategy_c": {
+          "gross": 20705518.47,
+          "net": -2067905.56,
+          "passed": true
+        }
+      }
+    }
+  ],
+  "overall_passed": true
+}

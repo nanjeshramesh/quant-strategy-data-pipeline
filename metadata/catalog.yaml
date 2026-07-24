@@ -1,0 +1,56 @@
+# Table/dataset catalog for the strategy analytics lake.
+# This is a deliberately simple stand-in for what a real metadata/lineage
+# system (e.g. DataHub, Amundsen, Glue Data Catalog) would generate
+# automatically. The point being demonstrated is *what* should be
+# discoverable about a dataset, not the tooling that serves it.
+
+tables:
+  strategy_signals:
+    description: >
+      Daily per-ticker signal scores and target position sizes, standardized
+      across all strategies into one schema.
+    owner: research-analytics-team
+    schema_contract: src/schema_contracts.py::SignalsSchema
+    location: data/lake/strategy_signals/
+    partitioned_by: [strategy_id, date]
+    file_format: parquet
+    freshness_sla: "available by 22:00 UTC on trade date"
+    upstream_sources:
+      - strategy_a (data/raw/strategy_a/*.csv)
+      - strategy_b (data/raw/strategy_b/*.csv)
+      - strategy_c (data/raw/strategy_c/*.json)
+    produced_by: src/standardize.py::run
+    consumed_by:
+      - src/query_examples.py
+      - downstream research notebooks (hypothetical)
+
+  strategy_pnl:
+    description: >
+      Daily PnL and exposure snapshot per strategy, standardized across all
+      strategies into one schema.
+    owner: research-analytics-team
+    schema_contract: src/schema_contracts.py::PnlSchema
+    location: data/lake/strategy_pnl/
+    partitioned_by: [strategy_id, date]
+    file_format: parquet
+    freshness_sla: "available by 22:00 UTC on trade date"
+    upstream_sources:
+      - strategy_a (data/raw/strategy_a/*.csv)
+      - strategy_b (data/raw/strategy_b/*.csv)
+      - strategy_c (data/raw/strategy_c/*.json)
+    produced_by: src/standardize.py::run
+    consumed_by:
+      - src/query_examples.py
+      - monitoring/health_check.py (indirectly, via quality_checks.py)
+
+quality_reports:
+  location: monitoring/reports/quality_<date>.json
+  produced_by: src/quality_checks.py::run
+  consumed_by: monitoring/health_check.py::main
+
+quarantine:
+  description: >
+    Raw sources that failed parsing or schema validation land here instead
+    of the lake, with a structured error report, so a bad source degrades
+    gracefully instead of corrupting the unified tables.
+  location: data/quarantine/<source>/<date>/error.json
