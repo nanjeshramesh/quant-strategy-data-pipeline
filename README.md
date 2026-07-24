@@ -1,4 +1,4 @@
-# Strategy Analytics Lakehouse
+# Quant Strategy Data Pipeline
 
 A small, runnable model of the problem a research-analytics platform team
 solves at a multi-strategy hedge fund: several strategy teams each publish
