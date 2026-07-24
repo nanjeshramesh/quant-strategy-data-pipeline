@@ -1,14 +1,30 @@
 # Runbook + Postmortem: strategy_b PnL column rename
 
-**Status:** Resolved (simulated incident, reproducible in this repo)
+**Status:** Resolved, fix shipped and verified (simulated incident,
+reproducible in this repo)
 **Severity:** Sev-2 (one of three strategies missing from the unified lake; no
 data corruption, no impact to the other two strategies)
-**Reproduce it yourself:**
+
+**Reproduce the original incident (historical):**
 ```bash
 python -m src.generate_raw_data --date 2026-07-24 --inject-drift
 python -m src.standardize --date 2026-07-24
 python -m src.quality_checks --date 2026-07-24
-python -m monitoring.health_check --date 2026-07-24   # exits 1, prints the alert
+python -m monitoring.health_check --date 2026-07-24
+```
+Note: this is the exact command sequence that produced the checked-in
+`data/quarantine/strategy_b/2026-07-24/` record. On the current `main`
+branch it will **no longer fail** -- the fix below now ships in
+`src/standardize.py`, so `parse_strategy_b` accepts the renamed column. The
+2026-07-24 artifacts are kept as-is as the historical record of what
+actually happened before the fix.
+
+**Verify the fix (strategy_b's source still hasn't reverted the rename):**
+```bash
+python -m src.generate_raw_data --date 2026-07-25 --inject-drift
+python -m src.standardize --date 2026-07-25     # all 3 strategies land
+python -m src.quality_checks --date 2026-07-25  # overall_passed: true
+python -m monitoring.health_check --date 2026-07-25   # [HEALTHY], exit 0
 ```
 
 ## Summary
@@ -46,11 +62,17 @@ data for `strategy_b`.
    before any write — quarantine, not corruption).
 4. **T+20min** — Fix shipped: `parse_strategy_b` updated to accept either
    `ProfitLossUSD` or `PnLUSD` (backward/forward compatible column mapping),
-   guarded by a new unit test asserting both column names parse identically.
+   guarded by `tests/test_pipeline_integration.py::
+   test_previously_incident_causing_column_rename_now_handled`, which
+   regenerates the exact renamed-column conditions and asserts the pipeline
+   no longer quarantines strategy_b.
 5. **T+25min** — Backfill: `python -m src.standardize --date 2026-07-24`
    re-run; partition write is idempotent so this is safe to re-run without
    creating duplicates.
 6. **T+27min** — `quality_checks` + `health_check` re-run clean.
+7. **Ongoing** — strategy_b's team never reverted the rename (they consider
+   `PnLUSD` the new normal). 2026-07-25 onward uses that column name and the
+   pipeline handles it without incident -- see "Verify the fix" above.
 
 ## Root cause
 

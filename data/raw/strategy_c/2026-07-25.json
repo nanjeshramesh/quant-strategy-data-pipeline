@@ -1,0 +1,214 @@
+{
+  "meta": {
+    "strategy": "strategy_c",
+    "date": "2026-07-25",
+    "generated_at": "2026-07-24T19:09:40.582557"
+  },
+  "positions": [
+    {
+      "ticker": "GOOGL",
+      "signal": -1.9241,
+      "target": 4026131.08
+    },
+    {
+      "ticker": "GOOGL",
+      "signal": 0.3942,
+      "target": 1494630.93
+    },
+    {
+      "ticker": "JPM",
+      "signal": -1.1325,
+      "target": 387066.9
+    },
+    {
+      "ticker": "AMZN",
+      "signal": 2.0851,
+      "target": 304222.12
+    },
+    {
+      "ticker": "AAPL",
+      "signal": 1.8005,
+      "target": 6991918.69
+    },
+    {
+      "ticker": "MSFT",
+      "signal": -0.7353,
+      "target": -12809700.47
+    },
+    {
+      "ticker": "TSLA",
+      "signal": 0.2127,
+      "target": -4535538.81
+    },
+    {
+      "ticker": "GOOGL",
+      "signal": 0.0614,
+      "target": -1668293.82
+    },
+    {
+      "ticker": "MSFT",
+      "signal": 0.5695,
+      "target": 880572.86
+    },
+    {
+      "ticker": "MSFT",
+      "signal": -0.2771,
+      "target": 1393671.33
+    },
+    {
+      "ticker": "XOM",
+      "signal": 1.2689,
+      "target": -735375.77
+    },
+    {
+      "ticker": "AMZN",
+      "signal": 1.526,
+      "target": 4857726.92
+    },
+    {
+      "ticker": "AAPL",
+      "signal": 1.1809,
+      "target": 1139231.55
+    },
+    {
+      "ticker": "AAPL",
+      "signal": -1.2107,
+      "target": -1809661.78
+    },
+    {
+      "ticker": "GOOGL",
+      "signal": -0.9741,
+      "target": 2906043.94
+    },
+    {
+      "ticker": "AMZN",
+      "signal": 0.0678,
+      "target": 12734221.74
+    },
+    {
+      "ticker": "JPM",
+      "signal": 0.6557,
+      "target": -4095738.48
+    },
+    {
+      "ticker": "AMZN",
+      "signal": 1.2544,
+      "target": -1408260.38
+    },
+    {
+      "ticker": "TSLA",
+      "signal": -0.0061,
+      "target": 1532221.25
+    },
+    {
+      "ticker": "AAPL",
+      "signal": -0.2474,
+      "target": 538405.37
+    },
+    {
+      "ticker": "MSFT",
+      "signal": 0.8088,
+      "target": -583597.65
+    },
+    {
+      "ticker": "TSLA",
+      "signal": -1.1462,
+      "target": -442725.93
+    },
+    {
+      "ticker": "NVDA",
+      "signal": -2.2905,
+      "target": -8974675.86
+    },
+    {
+      "ticker": "TSLA",
+      "signal": -0.5639,
+      "target": -2869251.07
+    },
+    {
+      "ticker": "JPM",
+      "signal": -0.1456,
+      "target": -742120.2
+    },
+    {
+      "ticker": "AMZN",
+      "signal": 0.1346,
+      "target": -3182589.28
+    },
+    {
+      "ticker": "GOOGL",
+      "signal": 1.1326,
+      "target": -2694399.47
+    },
+    {
+      "ticker": "AAPL",
+      "signal": 0.5872,
+      "target": 2528611.56
+    },
+    {
+      "ticker": "NVDA",
+      "signal": -0.3977,
+      "target": -4176793.77
+    },
+    {
+      "ticker": "MSFT",
+      "signal": 0.3481,
+      "target": -155418.41
+    },
+    {
+      "ticker": "NVDA",
+      "signal": 0.8835,
+      "target": 1110139.82
+    },
+    {
+      "ticker": "AMZN",
+      "signal": -0.0354,
+      "target": 10690007.72
+    },
+    {
+      "ticker": "TSLA",
+      "signal": -0.5941,
+      "target": 781243.69
+    },
+    {
+      "ticker": "AMZN",
+      "signal": 1.9445,
+      "target": -1831089.26
+    },
+    {
+      "ticker": "XOM",
+      "signal": -1.6817,
+      "target": -915713.72
+    },
+    {
+      "ticker": "MSFT",
+      "signal": 0.203,
+      "target": -302083.34
+    },
+    {
+      "ticker": "TSLA",
+      "signal": 0.0787,
+      "target": 2964044.8
+    },
+    {
+      "ticker": "XOM",
+      "signal": 0.6918,
+      "target": 3885081.79
+    },
+    {
+      "ticker": "NVDA",
+      "signal": -1.1756,
+      "target": 6296948.08
+    },
+    {
+      "ticker": "AMZN",
+      "signal": 0.6854,
+      "target": 2625191.43
+    }
+  ],
+  "pnl": {
+    "usd": 392166.04,
+    "gross": 19948997.64,
+    "net": 5989293.46
+  }
+}

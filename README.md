@@ -87,21 +87,22 @@ task boundaries and retry/SLA policy are the real design.
 ## The incident
 
 `runbooks/schema_drift_incident.md` documents a simulated but fully
-reproducible incident: `strategy_b` renames its PnL column
-(`ProfitLossUSD` → `PnLUSD`) with no notice. Reproduce it:
+reproducible incident: `strategy_b` renamed its PnL column
+(`ProfitLossUSD` → `PnLUSD`) with no notice on 2026-07-24. The fix has since
+shipped, so this is now a two-part story: what broke, and the regression
+test proving it stays fixed.
 
 ```bash
+# original incident conditions -- kept as historical record, no longer fails on main
 make incident DATE=2026-07-24
-# or directly:
-python -m src.generate_raw_data --date 2026-07-24 --inject-drift
-python -m src.standardize --date 2026-07-24     # strategy_b -> quarantined, a & c land fine
-python -m src.quality_checks --date 2026-07-24  # overall_passed: false
-python -m monitoring.health_check --date 2026-07-24  # prints an alert, exit code 1
+
+# same renamed column, but on current main: all 3 strategies land clean
+make incident DATE=2026-07-25
 ```
 
-The runbook walks through detection, triage, root cause, the fix, and
-postmortem follow-ups — the artifact this repo treats as a first-class
-deliverable, not an afterthought.
+The runbook walks through detection, triage, root cause, the fix (with its
+regression test), and postmortem follow-ups — the artifact this repo treats
+as a first-class deliverable, not an afterthought.
 
 ## Repo layout
 
@@ -123,11 +124,14 @@ runbooks/
   schema_drift_incident.md   incident + postmortem
 tests/
   test_schema_contracts.py       unit tests on the pandera contracts
-  test_pipeline_integration.py   end-to-end: happy path + the drift incident
+  test_pipeline_integration.py   end-to-end: happy path, the fixed drift
+                                  incident (regression test), and a generic
+                                  unhandled-break isolation check
 data/
-  raw/, lake/, quarantine/   sample output for 2026-07-23 (happy path) and
-                              2026-07-24 (drift incident), checked in so the
-                              repo is browsable without running anything
+  raw/, lake/, quarantine/   sample output for 2026-07-23 (happy path),
+                              2026-07-24 (drift incident, pre-fix), and
+                              2026-07-25 (same drift, post-fix) -- checked in
+                              so the repo is browsable without running anything
 ```
 
 ## Running it

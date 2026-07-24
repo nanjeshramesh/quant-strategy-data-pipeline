@@ -69,15 +69,28 @@ def parse_strategy_a(run_date: date) -> tuple[pd.DataFrame, pd.DataFrame]:
     return signals, pnl
 
 
+# PnL column names strategy_b has used over time. ProfitLossUSD was the
+# original name; strategy_b's team renamed it to PnLUSD without notice on
+# 2026-07-24 (see runbooks/schema_drift_incident.md). Rather than hard-fail
+# on that specific rename forever, the parser now accepts either name --
+# this list is the fix, and the incident is the regression test for it
+# (tests/test_pipeline_integration.py::test_previously_incident_causing_column_rename_now_handled).
+_STRATEGY_B_PNL_COLUMN_ALIASES = ["ProfitLossUSD", "PnLUSD"]
+
+
 def parse_strategy_b(run_date: date) -> tuple[pd.DataFrame, pd.DataFrame]:
     path = RAW_DIR / "strategy_b" / f"{run_date.isoformat()}.csv"
     df = pd.read_csv(path)
     _require_columns(
         df, ["StrategyID", "Date", "Symbol", "SignalScore", "PositionTarget", "GrossExposure", "NetExposure"], "strategy_b"
     )
-    # This is the column that historically has drifted (ProfitLossUSD -> PnLUSD).
-    # We fail loudly with a clear message rather than silently defaulting to 0/NaN.
-    _require_columns(df, ["ProfitLossUSD"], "strategy_b")
+
+    pnl_col = next((c for c in _STRATEGY_B_PNL_COLUMN_ALIASES if c in df.columns), None)
+    if pnl_col is None:
+        raise SchemaDriftError(
+            f"[strategy_b] missing PnL column; expected one of {_STRATEGY_B_PNL_COLUMN_ALIASES}, "
+            f"got columns={list(df.columns)}"
+        )
 
     signals = pd.DataFrame({
         "strategy_id": df["StrategyID"],
@@ -89,7 +102,7 @@ def parse_strategy_b(run_date: date) -> tuple[pd.DataFrame, pd.DataFrame]:
     pnl = pd.DataFrame({
         "strategy_id": ["strategy_b"],
         "date": [pd.to_datetime(run_date)],
-        "pnl_usd": [df["ProfitLossUSD"].iloc[0]],
+        "pnl_usd": [df[pnl_col].iloc[0]],
         "gross_exposure_usd": [df["GrossExposure"].iloc[0]],
         "net_exposure_usd": [df["NetExposure"].iloc[0]],
     })

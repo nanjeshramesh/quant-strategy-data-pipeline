@@ -4,8 +4,8 @@ __pycache__/
 .venv/
 *.egg-info/
 
-# Sample demo data for 2026-07-23 / 2026-07-24 (data/raw, data/lake,
-# data/quarantine, monitoring/reports) is intentionally checked in so the
-# repo is browsable without running anything. Re-run src/generate_raw_data.py
-# for any other date to regenerate/extend it -- partitions overwrite
-# idempotently.
+# Sample demo data for 2026-07-23 / 2026-07-24 / 2026-07-25 (data/raw,
+# data/lake, data/quarantine, monitoring/reports) is intentionally checked in
+# so the repo is browsable without running anything. Re-run
+# src/generate_raw_data.py for any other date to regenerate/extend it --
+# partitions overwrite idempotently.
