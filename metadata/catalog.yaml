@@ -14,7 +14,12 @@ tables:
     location: data/lake/strategy_signals/
     partitioned_by: [strategy_id, date]
     file_format: parquet
-    freshness_sla: "available by 22:00 UTC on trade date"
+    freshness_sla_target: "available by 22:00 UTC on trade date"
+    freshness_sla_enforced: false  # documented target only -- src/quality_checks.py::check_freshness
+      # checks whether the partition exists when quality_checks runs, it
+      # does not check wall-clock time against this deadline. Enforcing the
+      # actual deadline would mean recording a landed_at timestamp per
+      # partition and comparing it here.
     upstream_sources:
       - strategy_a (data/raw/strategy_a/*.csv)
       - strategy_b (data/raw/strategy_b/*.csv)
@@ -33,7 +38,12 @@ tables:
     location: data/lake/strategy_pnl/
     partitioned_by: [strategy_id, date]
     file_format: parquet
-    freshness_sla: "available by 22:00 UTC on trade date"
+    freshness_sla_target: "available by 22:00 UTC on trade date"
+    freshness_sla_enforced: false  # documented target only -- src/quality_checks.py::check_freshness
+      # checks whether the partition exists when quality_checks runs, it
+      # does not check wall-clock time against this deadline. Enforcing the
+      # actual deadline would mean recording a landed_at timestamp per
+      # partition and comparing it here.
     upstream_sources:
       - strategy_a (data/raw/strategy_a/*.csv)
       - strategy_b (data/raw/strategy_b/*.csv)

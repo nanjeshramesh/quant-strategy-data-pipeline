@@ -36,6 +36,13 @@ def _load_partition(table: str, strategy_id: str, run_date: date) -> pd.DataFram
 
 
 def check_freshness(run_date: date) -> dict:
+    """Presence check, not a wall-clock SLA: this only asks "does a partition
+    exist for run_date right now?", not "did it land by some deadline?". The
+    catalog documents a target ("available by 22:00 UTC on trade date",
+    metadata/catalog.yaml, freshness_sla_target) but nothing here checks the
+    clock against it -- see freshness_sla_enforced: false in the catalog.
+    Enforcing the real deadline would mean recording a landed_at timestamp
+    per partition in _write_partition and comparing it here."""
     present, missing = [], []
     for s in EXPECTED_STRATEGIES:
         df = _load_partition("strategy_pnl", s, run_date)

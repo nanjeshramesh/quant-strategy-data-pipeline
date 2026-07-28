@@ -92,6 +92,22 @@ upstream changes need a heads-up channel.
 - Detection was same-day via the freshness check, not "someone querying
   the table three days later and asking why strategy_b is empty."
 
+## Related follow-up: isolation held for this incident, but not for all
+
+This incident's specific failure (missing column) was already one of the
+three exception types `standardize.py` caught, so it quarantined correctly
+the first time. Stress-testing other failure shapes afterward turned up two
+that were not caught: a malformed CSV row (pandas either raises `ParserError`
+or silently misaligns columns and fails downstream with a confusing,
+unrelated-looking error) and a pandera strict-mode column violation (raises
+the *plural* `SchemaErrors`, a different, non-subclass exception from the
+singular `SchemaError` that was being caught). Both used to crash the entire
+run instead of quarantining just the broken source, contradicting the
+isolation guarantee this runbook and the README both claim. The except
+clause is now broad (catches any exception per source), with a regression
+test: `tests/test_pipeline_integration.py::
+test_malformed_csv_row_quarantines_source_instead_of_crashing_run`.
+
 ## Follow-ups / prevention (postmortem action items)
 
 - [ ] Add a lightweight raw-schema contract per source (not just canonical)

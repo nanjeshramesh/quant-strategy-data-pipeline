@@ -25,7 +25,6 @@ from datetime import date, datetime
 from pathlib import Path
 
 import pandas as pd
-import pandera.pandas as pa
 
 from src.schema_contracts import SCHEMAS
 
@@ -185,10 +184,27 @@ def run(run_date: date) -> dict:
             summary["succeeded"].append(strategy_id)
             print(f"[OK]   {strategy_id} {run_date} -> standardized ({len(signals)} signal rows)")
 
-        except (SchemaDriftError, pa.errors.SchemaError, FileNotFoundError) as e:
+        except Exception as e:
+            # Deliberately broad: the isolation guarantee ("one source's break
+            # can't take down the run") only holds if we quarantine on *any*
+            # parser failure, not just the ones we anticipated. An earlier
+            # version of this only caught SchemaDriftError / pandera's
+            # SchemaError / FileNotFoundError, which missed real failure
+            # modes. A malformed CSV row doesn't always fail cleanly either:
+            # depending on where the bad row is, pandas either raises
+            # ParserError outright, or silently misaligns columns and fails
+            # later with a confusing, unrelated-looking error (we observed a
+            # DateParseError complaining about a ticker symbol, because the
+            # date column had silently absorbed a shifted value). Pandera's
+            # own strict-mode column violations raise the *plural*
+            # SchemaErrors, a different, non-subclass exception from
+            # SchemaError. None of these used to be caught -- they crashed
+            # the entire run instead of quarantining just the offending
+            # source. See tests/test_pipeline_integration.py::
+            # test_malformed_csv_row_quarantines_source_instead_of_crashing_run.
             _quarantine(strategy_id, run_date, e)
             summary["quarantined"].append({"strategy_id": strategy_id, "error": str(e)})
-            print(f"[FAIL] {strategy_id} {run_date} -> quarantined: {e}")
+            print(f"[FAIL] {strategy_id} {run_date} -> quarantined: {type(e).__name__}: {e}")
 
     return summary
 

@@ -61,7 +61,15 @@ task boundaries and retry/SLA policy are the real design.
 - **Per-source parsers, isolated blast radius.** `standardize.py` has one
   parser per strategy. A format change in `strategy_b` can only break
   `strategy_b`'s parsing — it can't silently corrupt `strategy_a` or
-  `strategy_c`, and it can't take down the whole run.
+  `strategy_c`. The per-source `try`/`except` deliberately catches *any*
+  exception, not just the ones we anticipated (`SchemaDriftError`, pandera's
+  `SchemaError`, `FileNotFoundError`) — an earlier version only caught those
+  three, which meant a malformed CSV row (`pandas.errors.ParserError`, or a
+  confusing downstream error if pandas silently misaligned columns instead)
+  or a pandera strict-mode violation (the *plural* `SchemaErrors`, not a
+  subclass of `SchemaError`) would crash the entire run instead of
+  quarantining just the broken source. See
+  `tests/test_pipeline_integration.py::test_malformed_csv_row_quarantines_source_instead_of_crashing_run`.
 - **Fail loud into quarantine, not silent-wrong into the lake.** A parser
   failure is caught, written to `data/quarantine/<source>/<date>/error.json`
   with the exact cause, and the run continues for the other sources. Nothing
@@ -166,3 +174,9 @@ make test
   instead of being hand-maintained.
 - Track quarantine rate per source over time as a reliability metric, not
   just a per-run pass/fail.
+- Turn the documented freshness target (`freshness_sla_target` in
+  `metadata/catalog.yaml`) into something actually enforced. Today
+  `check_freshness` only checks whether a partition exists, not whether it
+  landed by a deadline (`freshness_sla_enforced: false` in the catalog is
+  honest about this). Closing the gap means recording a `landed_at`
+  timestamp per partition and comparing it against the target.
